@@ -6,13 +6,13 @@ import urllib3
 import random
 
 # Group to look for member in
-target_group_id 	 = 75494873
-days_before 		 = 3
-days_after 			 = 10
+target_group_id = 75494873
+days_before  = 3
+days_after  = 10
 # How long history t should load to try sending you user's photos
-photo_history_days 	 = 90
+photo_history_days = 90
 # Who will receive the results of scripts
-receipants 			 = '12245505,349758'
+receipants = '12245505,349758'
 
 from access_token import access_token, group_access_token
 session = vk.Session(access_token=access_token)
