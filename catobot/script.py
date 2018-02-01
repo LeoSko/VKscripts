@@ -2,6 +2,7 @@ import vk
 import socket
 from datetime import date, datetime, timedelta
 import locale
+from string import punctuation
 import random
 from difflib import SequenceMatcher
 import time
@@ -28,7 +29,7 @@ def get_random_cat_attachment():
 	random_wall_number = random.randint(0, 1578 - 5)
 	walls = uapi.wall.get(owner_id=group_with_cats, filter='owner', count=5, offset=random_wall_number)
 	for wall in walls['items']:
-		if wall['attachments'] is not None:
+		if 'attachments' in wall:
 			attach = wall['attachments'][0]
 			doc_type = attach['type']
 			key = attach[doc_type]['access_key']
@@ -62,7 +63,7 @@ def get_help():
 def calc_dist(msg, strings, ratio):
 	for string in strings:
 		for word in msg.split(' '):
-			if SequenceMatcher(None, word, string).ratio() > ratio:
+			if SequenceMatcher(None, word.lower().translate(punctuation), string.lower()).ratio() > ratio:
 				return True
 	return False
 
@@ -87,12 +88,12 @@ class CatobotMessageHandler(BaseHTTPRequestHandler):
 			users.add(user_id)
 
 			global messages_this_session
-			if calc_dist(message, ["гифку", "котика", "кота", "кису", "милое", "хочу", "пришли", "ещё", "больше", "ага", "конечно", "разумеется", "да"], 0.6):
+			if calc_dist(message, ["гифку", "гиф", "котика", "кота", "кису", "милое", "хочу", "пришли", "ещё", "больше", "ага", "конечно", "разумеется", "да", "давай"], 0.6):
 				[result_message, result_attach] = get_random_cat_attachment()
 				messages_this_session += 1
-			elif calc_dist(message, ["Привет", "здарова", "хай", "хаюшки", "здравствуй"], 0.6):
+			elif calc_dist(message, ["Привет", "здарова", "хай", "хаюшки", "здравствуй", "дарова", ], 0.6):
 				result_message = "Привет! Как дела? Хочешь гифку с котиком?"
-			elif calc_dist(message, ["как", "дела", "статистика", "жизнь"], 0.6):
+			elif calc_dist(message, ["как", "дела", "статистика", "жизнь", "поживаешь"], 0.6):
 				result_message = get_statistics()
 			else:
 				result_message = get_help()
